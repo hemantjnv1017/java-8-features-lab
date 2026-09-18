@@ -7,11 +7,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * MODULE 06 — Streams advanced + Collectors (interview goldmine)
+ * MODULE 06 — Collectors (~3–4 YOE goldmine)
  *
- * Must-know Collectors:
- * toList/toSet/toMap, joining, counting, summingInt, averagingInt,
- * groupingBy, partitioningBy, mapping, collectingAndThen, summarizingInt
+ * Must-know: groupingBy, partitioningBy, toMap(+merge), joining, parallelStream caveats
  */
 @Service
 public class StreamsAdvancedDemoService {
@@ -28,9 +26,6 @@ public class StreamsAdvancedDemoService {
     );
 
     public DemoResult groupingPartitioning() {
-        Map<String, List<Emp>> byDept = EMPS.stream()
-                .collect(Collectors.groupingBy(Emp::dept));
-
         Map<String, Long> countByDept = EMPS.stream()
                 .collect(Collectors.groupingBy(Emp::dept, Collectors.counting()));
 
@@ -45,14 +40,11 @@ public class StreamsAdvancedDemoService {
                         Collectors.mapping(Emp::name, Collectors.toList())));
 
         return DemoResult.of("06-streams-advanced", "grouping",
-                "groupingBy = classifier key. partitioningBy = always Map&lt;Boolean, List&gt;. Downstream collectors are powerful.",
+                "groupingBy(dept). partitioningBy(boolean). Counting/summing downstream — coding round favorite.",
                 DemoResult.map(
-                        "byDeptSizes", byDept.entrySet().stream()
-                                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size())),
                         "countByDept", countByDept,
                         "salarySum", salarySum,
                         "highPaidCount", highPaid.get(true).size(),
-                        "lowPaidCount", highPaid.get(false).size(),
                         "namesByDept", namesByDept
                 ));
     }
@@ -88,30 +80,30 @@ public class StreamsAdvancedDemoService {
                 .orElse("none");
 
         return DemoResult.of("06-streams-advanced", "collecting-and-then",
-                "collectingAndThen(downstream, finisher) — e.g. collect then wrap unmodifiable.",
+                "Nice-to-know: collectingAndThen. More common: max/min + orElse after filter.",
                 DemoResult.map("unmodifiableNames", unmodifiable, "topIt", topIt));
     }
 
     public DemoResult parallelCaveats() {
         int sum = EMPS.parallelStream().mapToInt(Emp::salary).sum();
-
         List<String> tips = List.of(
-                "parallelStream uses ForkJoinPool.commonPool()",
-                "Good: large CPU-bound, associative ops (sum)",
-                "Bad: tiny lists, blocking I/O, ordered side-effects",
-                "Avoid shared mutable state in parallel lambdas"
+                "Uses commonPool — shared JVM-wide",
+                "OK: large CPU-bound",
+                "Avoid: small lists, blocking I/O, shared mutable state"
         );
-
         return DemoResult.of("06-streams-advanced", "parallel",
-                "parallelStream ≠ free speedup. Measure. Prefer sequential unless proven benefit.",
+                "parallelStream ≠ automatic faster. 3–4 YOE: know when NOT to use.",
                 DemoResult.map("salarySumParallel", sum, "tips", tips));
     }
 
     public DemoResult infiniteAndShortCircuit() {
-        List<Integer> first10Even = StreamSupportHelpers.firstEven(10);
+        List<Integer> first10Even = java.util.stream.Stream.iterate(0, i -> i + 1)
+                .filter(i -> i % 2 == 0)
+                .limit(10)
+                .toList();
 
         return DemoResult.of("06-streams-advanced", "infinite",
-                "iterate/generate create infinite streams — MUST use limit/find*/anyMatch to terminate.",
+                "iterate/generate infinite → must limit/findAny. Awareness-level Q.",
                 DemoResult.map("first10Even", first10Even));
     }
 
@@ -123,15 +115,5 @@ public class StreamsAdvancedDemoService {
         return DemoResult.of("06-streams-advanced", "all",
                 "Next: /api/modules/07-optional",
                 DemoResult.map("demos", parts.stream().map(DemoResult::demo).toList(), "results", parts));
-    }
-
-    /** Small helper to keep demo readable. */
-    static class StreamSupportHelpers {
-        static List<Integer> firstEven(int n) {
-            return java.util.stream.Stream.iterate(0, i -> i + 1)
-                    .filter(i -> i % 2 == 0)
-                    .limit(n)
-                    .toList();
-        }
     }
 }

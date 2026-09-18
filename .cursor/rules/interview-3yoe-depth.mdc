@@ -1,0 +1,13 @@
+---
+description: Interview notes/demos at ~3-4 YOE depth for Java 8 lab
+alwaysApply: true
+---
+
+# Interview content depth (~3–4 years experience)
+
+When adding theory, tips, Q&A, or demos in this lab:
+
+- Target **~3–4 years Java** interviews (mid-level).
+- Keep: short definition, main APIs, 2–4 use cases, 1 common mistake, ≤5 Q&A.
+- Avoid: Metaspace/Nashorn deep dives, staff-level Stream internals, long talk-tracks.
+- Prefer coding-pattern clarity (groupingBy, flatMap, orElse vs orElseGet) over academic JMM.

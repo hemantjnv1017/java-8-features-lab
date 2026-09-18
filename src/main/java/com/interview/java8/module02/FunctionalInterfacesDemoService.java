@@ -8,15 +8,10 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
- * MODULE 02 — Built-in functional interfaces (java.util.function)
+ * MODULE 02 — Functional interfaces (~3–4 YOE)
  *
- * Interview must-knows — memorize these 4 + variants:
- * - Predicate&lt;T&gt;     → boolean test(T)
- * - Function&lt;T,R&gt;    → R apply(T)
- * - Consumer&lt;T&gt;      → void accept(T)
- * - Supplier&lt;T&gt;      → T get()
- * Plus: UnaryOperator, BinaryOperator, BiFunction, BiPredicate, BiConsumer
- * Composition: andThen, compose, and, or, negate
+ * Must-know: Predicate, Function, Consumer, Supplier (+ Bi* / Operator),
+ * and/or/negate, andThen/compose, @FunctionalInterface = SAM
  */
 @Service
 public class FunctionalInterfacesDemoService {
@@ -98,31 +93,9 @@ public class FunctionalInterfacesDemoService {
                 DemoResult.map("volume", v, "rule", "Exactly one abstract method"));
     }
 
-    public DemoResult primitiveSpecializations() {
-        // Avoid boxing overhead in hot paths
-        IntPredicate even = i -> i % 2 == 0;
-        ToIntFunction<String> toLen = String::length;
-        IntFunction<String> box = i -> "n=" + i;
-        ObjIntConsumer<List<Integer>> addInt = List::add;
-
-        List<Integer> nums = new ArrayList<>();
-        addInt.accept(nums, 10);
-        addInt.accept(nums, 11);
-
-        return DemoResult.of("02-functional", "primitive-fi",
-                "IntPredicate, ToIntFunction, LongSupplier... avoid autoboxing in streams of primitives.",
-                DemoResult.map(
-                        "even(4)", even.test(4),
-                        "toLen(Java)", toLen.applyAsInt("Java"),
-                        "box(7)", box.apply(7),
-                        "nums", nums
-                ));
-    }
-
     public DemoResult all() {
         List<DemoResult> parts = List.of(
-                coreFour(), biAndOperators(), composition(),
-                customFunctionalInterface(), primitiveSpecializations()
+                coreFour(), biAndOperators(), composition(), customFunctionalInterface()
         );
         return DemoResult.of("02-functional", "all",
                 "Next: /api/modules/03-method-refs",

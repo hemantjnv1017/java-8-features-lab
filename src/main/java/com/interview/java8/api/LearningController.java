@@ -12,14 +12,21 @@ import com.interview.java8.module08.DateTimeDemoService;
 import com.interview.java8.module09.CollectionsEnhancementsDemoService;
 import com.interview.java8.module10.CompletableFutureDemoService;
 import com.interview.java8.module11.InterviewPatternsDemoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Prefer Swagger: http://localhost:8081/swagger-ui/index.html
+ */
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Java 8 learning modules", description = "~3–4 YOE interview demos")
 public class LearningController {
 
     private final LambdaDemoService lambda;
@@ -60,46 +67,52 @@ public class LearningController {
     }
 
     @GetMapping("/modules")
+    @Operation(summary = "Catalog — start here")
     public Map<String, Object> catalog() {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("title", "Java 8 Features Lab — Interview Revision");
+        body.put("title", "Java 8 Features Lab — ~3–4 YOE Interview Path");
         body.put("port", 8081);
+        body.put("swagger", "http://localhost:8081/swagger-ui/index.html");
+        body.put("questionBank", "INTERVIEW-QUESTIONS-3-4YOE.md");
         body.put("howToRevise", List.of(
-                "Go module 01 → 11 in order",
-                "GET /api/modules/{id} runs all demos",
-                "Read interviewTip aloud (30–60s explanation)",
-                "Open the matching *DemoService.java and tweak code",
-                "Finish with 11-patterns checklist"
+                "Modules 01→11 in order (~3–4 YOE depth)",
+                "Read interviewTip in 30–60s",
+                "Practice coding demos in 11-patterns",
+                "Use INTERVIEW-QUESTIONS-3-4YOE.md as checklist"
         ));
         body.put("modules", List.of(
-                mod("01-lambda", "Lambda syntax, effectively final, vs anonymous class",
+                mod("01-lambda", "Lambda syntax, effectively final, vs anonymous",
                         List.of("syntax", "effectively-final", "vs-anonymous", "sorting", "all")),
                 mod("02-functional", "Predicate/Function/Consumer/Supplier + composition",
-                        List.of("core-four", "bi-operators", "composition", "custom-fi", "primitive-fi", "all")),
+                        List.of("core-four", "bi-operators", "composition", "custom-fi", "all")),
                 mod("03-method-refs", "Four kinds of method references",
                         List.of("four-kinds", "with-streams", "when-not", "all")),
-                mod("04-interfaces", "default/static methods, diamond problem",
+                mod("04-interfaces", "default/static methods, diamond",
                         List.of("default-static", "diamond", "vs-abstract", "all")),
-                mod("05-streams-basic", "Pipeline, map/filter/flatMap, match/find/reduce",
-                        List.of("lazy-pipeline", "filter-map", "flatmap", "match-find-reduce", "primitive-streams", "all")),
-                mod("06-streams-advanced", "Collectors groupingBy/partitioningBy/toMap",
+                mod("05-streams-basic", "Lazy pipeline, map/flatMap, find, stream reuse",
+                        List.of("lazy-pipeline", "filter-map", "flatmap", "match-find-reduce",
+                                "primitive-streams", "stream-reuse", "all")),
+                mod("06-streams-advanced", "groupingBy, toMap, joining, parallel caveats",
                         List.of("grouping", "tomap-joining", "collecting-and-then", "parallel", "infinite", "all")),
-                mod("07-optional", "Optional creation, orElse vs orElseGet, map/flatMap",
+                mod("07-optional", "orElse vs orElseGet, map/flatMap, anti-patterns",
                         List.of("creation", "orelse-vs-orelseget", "map-flatmap", "anti-patterns", "with-streams", "all")),
-                mod("08-datetime", "LocalDate/Time, zones, Period/Duration, formatter",
+                mod("08-datetime", "LocalDate/Time, Instant, Period/Duration, formatter",
                         List.of("local-types", "zones-instant", "period-duration", "format-parse", "legacy", "all")),
-                mod("09-collections", "Map compute/merge, Comparator, Base64, frequency",
+                mod("09-collections", "Map merge/compute, Comparator, frequency",
                         List.of("list-helpers", "map-compute", "comparator", "misc", "frequency", "all")),
-                mod("10-completable", "CompletableFuture Java 8 intro",
+                mod("10-completable", "CompletableFuture chaining (Java 8 intro)",
                         List.of("chain", "combine", "errors", "executor", "all")),
-                mod("11-patterns", "Interview coding patterns + revision checklist",
-                        List.of("topn-second", "group-agg", "partition-join", "optional-pipeline", "checklist", "all"))
+                mod("11-patterns", "Coding patterns: topN, group, frequency, checklist",
+                        List.of("topn-second", "group-agg", "partition-join", "optional-pipeline",
+                                "frequency-duplicates", "checklist", "all"))
         ));
         return body;
     }
 
     @GetMapping("/modules/{moduleId}")
-    public DemoResult runModule(@PathVariable String moduleId) throws Exception {
+    @Operation(summary = "Run all demos in a module")
+    public DemoResult runModule(
+            @Parameter(example = "05-streams-basic") @PathVariable String moduleId) throws Exception {
         return switch (moduleId) {
             case "01-lambda" -> lambda.all();
             case "02-functional" -> functional.all();
@@ -117,7 +130,10 @@ public class LearningController {
     }
 
     @GetMapping("/modules/{moduleId}/{demo}")
-    public DemoResult runDemo(@PathVariable String moduleId, @PathVariable String demo) throws Exception {
+    @Operation(summary = "Run one demo")
+    public DemoResult runDemo(
+            @Parameter(example = "07-optional") @PathVariable String moduleId,
+            @Parameter(example = "orelse-vs-orelseget") @PathVariable String demo) throws Exception {
         return switch (moduleId) {
             case "01-lambda" -> switch (demo) {
                 case "syntax" -> lambda.syntaxForms();
@@ -132,7 +148,6 @@ public class LearningController {
                 case "bi-operators" -> functional.biAndOperators();
                 case "composition" -> functional.composition();
                 case "custom-fi" -> functional.customFunctionalInterface();
-                case "primitive-fi" -> functional.primitiveSpecializations();
                 case "all" -> functional.all();
                 default -> unknown(moduleId, demo);
             };
@@ -156,6 +171,7 @@ public class LearningController {
                 case "flatmap" -> streamsBasic.flatMapDemo();
                 case "match-find-reduce" -> streamsBasic.matchFindReduce();
                 case "primitive-streams" -> streamsBasic.primitiveStreams();
+                case "stream-reuse" -> streamsBasic.streamReuse();
                 case "all" -> streamsBasic.all();
                 default -> unknown(moduleId, demo);
             };
@@ -208,6 +224,7 @@ public class LearningController {
                 case "group-agg" -> patterns.groupAvgMax();
                 case "partition-join" -> patterns.partitionAndJoin();
                 case "optional-pipeline" -> patterns.optionalPipeline();
+                case "frequency-duplicates" -> patterns.frequencyAndDuplicates();
                 case "checklist" -> patterns.revisionChecklist();
                 case "all" -> patterns.all();
                 default -> unknown(moduleId, demo);

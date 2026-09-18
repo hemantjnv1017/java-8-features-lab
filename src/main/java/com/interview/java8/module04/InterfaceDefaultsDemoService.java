@@ -91,14 +91,13 @@ public class InterfaceDefaultsDemoService {
 
     public DemoResult vsAbstractClass() {
         Map<String, String> comparison = new LinkedHashMap<>();
-        comparison.put("state/fields", "Abstract class: instance fields. Interface: constants + (later private methods in Java 9)");
-        comparison.put("constructors", "Abstract class yes; interface no");
-        comparison.put("multiple inheritance", "Class: single. Interface: multiple");
-        comparison.put("when to use abstract", "Shared state + partial implementation hierarchy");
-        comparison.put("when to use interface defaults", "API evolution, mixins, behavior contracts");
+        comparison.put("fields", "Abstract class: instance state. Interface: mostly behavior (+ defaults)");
+        comparison.put("extends", "Class: one parent. Interfaces: many");
+        comparison.put("when_abstract", "Shared state + hierarchy");
+        comparison.put("when_default", "API evolve without breaking implementors");
 
         return DemoResult.of("04-interfaces", "vs-abstract",
-                "Default methods ≠ replace abstract classes. They solve binary compatibility / mixin behavior.",
+                "Default methods ≠ abstract class replacement. Short answer enough for 3–4 YOE.",
                 DemoResult.map("comparison", comparison));
     }
 

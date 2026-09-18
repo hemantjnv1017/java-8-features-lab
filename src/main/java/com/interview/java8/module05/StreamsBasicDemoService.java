@@ -7,14 +7,10 @@ import java.util.*;
 import java.util.stream.*;
 
 /**
- * MODULE 05 — Streams API basics
+ * MODULE 05 — Streams basics (~3–4 YOE)
  *
- * Interview must-knows:
- * - Stream pipeline: source → intermediate (lazy) → terminal (eager)
- * - filter, map, flatMap, distinct, sorted, peek, limit, skip
- * - forEach, collect, reduce, count, anyMatch/allMatch/noneMatch, findFirst/findAny
- * - Streams are NOT data structures; usually single-use
- * - Order: encounter order vs parallel unordered
+ * Must-know: lazy intermediate vs terminal, map vs flatMap, filter/distinct/sorted,
+ * findFirst vs findAny, reduce, stream is single-use
  */
 @Service
 public class StreamsBasicDemoService {
@@ -99,22 +95,32 @@ public class StreamsBasicDemoService {
                 .filter(i -> i % 2 == 0)
                 .summaryStatistics();
 
-        double avg = DoubleStream.of(1.5, 2.5, 3.5).average().orElse(0);
-
         return DemoResult.of("05-streams-basic", "primitive-streams",
-                "IntStream/LongStream/DoubleStream avoid boxing. Prefer mapToInt over map(Integer).",
-                DemoResult.map(
-                        "evenCount", stats.getCount(),
-                        "evenSum", stats.getSum(),
-                        "evenAvg", stats.getAverage(),
-                        "doubleAvg", avg
-                ));
+                "mapToInt / IntStream — boxing avoid. Interview: sum/average on numbers.",
+                DemoResult.map("evenCount", stats.getCount(), "evenSum", stats.getSum(), "evenAvg", stats.getAverage()));
+    }
+
+    /** High-frequency trap: stream cannot be reused after a terminal op. */
+    public DemoResult streamReuse() {
+        Stream<String> stream = NAMES.stream().filter(n -> n.length() <= 3);
+        List<String> firstUse = stream.toList(); // terminal — stream consumed
+
+        String error = null;
+        try {
+            stream.count(); // reuse → IllegalStateException
+        } catch (IllegalStateException e) {
+            error = e.getClass().getSimpleName() + ": " + e.getMessage();
+        }
+
+        return DemoResult.of("05-streams-basic", "stream-reuse",
+                "Stream single-use. Terminal ke baad dubara use = IllegalStateException. Naya stream() banao.",
+                DemoResult.map("firstUse", firstUse, "reuseError", error));
     }
 
     public DemoResult all() {
         List<DemoResult> parts = List.of(
                 pipelineLazy(), filterMapDistinctSorted(), flatMapDemo(),
-                matchFindReduce(), primitiveStreams()
+                matchFindReduce(), primitiveStreams(), streamReuse()
         );
         return DemoResult.of("05-streams-basic", "all",
                 "Next: /api/modules/06-streams-advanced",

@@ -4,20 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Java 8 Features Lab — interview revision path:
- *  01 Lambdas
- *  02 Functional interfaces
- *  03 Method references
- *  04 Interface default/static methods
- *  05 Streams basics
- *  06 Streams advanced + Collectors
- *  07 Optional
- *  08 Date/Time API
- *  09 Collection/Map enhancements
- *  10 CompletableFuture (Java 8 intro)
- *  11 Misc + interview patterns
- *
- * GET http://localhost:8081/api/modules
+ * Java 8 Features Lab — ~3–4 YOE interview path.
+ * Swagger: http://localhost:8081/swagger-ui/index.html
+ * Questions: INTERVIEW-QUESTIONS-3-4YOE.md
  */
 @SpringBootApplication
 public class Java8FeaturesLabApplication {

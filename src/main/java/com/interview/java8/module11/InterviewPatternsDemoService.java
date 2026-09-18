@@ -113,33 +113,49 @@ public class InterviewPatternsDemoService {
                 DemoResult.map("laptopLabel", label, "tablet", missing));
     }
 
+    public DemoResult frequencyAndDuplicates() {
+        List<String> words = List.of("java", "stream", "java", "lambda", "stream", "java");
+
+        Map<String, Long> freq = words.stream()
+                .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+
+        List<String> duplicates = freq.entrySet().stream()
+                .filter(e -> e.getValue() > 1)
+                .map(Map.Entry::getKey)
+                .sorted()
+                .toList();
+
+        return DemoResult.of("11-patterns", "frequency-duplicates",
+                "Word count = groupingBy + counting. Duplicates = freq > 1. Extremely common coding Q.",
+                DemoResult.map("frequency", freq, "duplicates", duplicates));
+    }
+
     public DemoResult revisionChecklist() {
         List<String> mustRevise = List.of(
-                "Lambda syntax + effectively final",
-                "Predicate/Function/Consumer/Supplier + composition",
-                "4 kinds of method references",
-                "default/static methods + diamond rule",
-                "Stream pipeline lazy vs terminal; map vs flatMap",
-                "Collectors: groupingBy, partitioningBy, toMap(merge), joining",
-                "Optional: orElse vs orElseGet; map vs flatMap; anti-patterns",
-                "LocalDate/Time, ZonedDateTime, Instant, Period vs Duration, DateTimeFormatter",
-                "Map.computeIfAbsent / merge",
-                "Comparator.comparing + thenComparing",
-                "CompletableFuture thenApply / thenCombine / exceptionally"
+                "Lambda + effectively final + vs anonymous this",
+                "Predicate/Function/Consumer/Supplier",
+                "Method refs (4 kinds) — high level",
+                "default/static + diamond override",
+                "Stream lazy/terminal; map vs flatMap; single-use",
+                "groupingBy / partitioningBy / toMap(merge) / joining",
+                "Optional: orElse vs orElseGet; don't get() blind",
+                "LocalDate vs Instant; Period vs Duration",
+                "Map.merge / computeIfAbsent; Comparator.comparing",
+                "Coding: second highest, frequency, group-by dept"
         );
 
         return DemoResult.of("11-patterns", "checklist",
-                "Revise this list aloud. If you can explain each in 30s with an example — you're interview-ready on Java 8.",
-                DemoResult.map("checklist", mustRevise, "tip", "Re-run failed topics via /api/modules/{id}"));
+                "~3–4 YOE checklist. 30s each with example = ready.",
+                DemoResult.map("checklist", mustRevise));
     }
 
     public DemoResult all() {
         List<DemoResult> parts = List.of(
                 topNAndSecondHighest(), groupAvgMax(), partitionAndJoin(),
-                optionalPipeline(), revisionChecklist()
+                optionalPipeline(), frequencyAndDuplicates(), revisionChecklist()
         );
         return DemoResult.of("11-patterns", "all",
-                "Java 8 lab complete. Loop weak modules. Pair with multithreading-lab for concurrency.",
+                "Java 8 lab complete. See INTERVIEW-QUESTIONS-3-4YOE.md",
                 DemoResult.map("demos", parts.stream().map(DemoResult::demo).toList(), "results", parts));
     }
 }
