@@ -5,6 +5,16 @@ spring:
   application:
     name: java8-features-lab
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    filter: true
+    tags-sorter: alpha
+    operations-sorter: method
+
 logging:
   level:
     com.interview.java8: INFO
