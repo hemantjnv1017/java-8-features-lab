@@ -12,6 +12,7 @@ import com.interview.java8.module08.DateTimeDemoService;
 import com.interview.java8.module09.CollectionsEnhancementsDemoService;
 import com.interview.java8.module10.CompletableFutureDemoService;
 import com.interview.java8.module11.InterviewPatternsDemoService;
+import com.interview.java8.module12.StreamQuizDemoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +41,7 @@ public class LearningController {
     private final CollectionsEnhancementsDemoService collections;
     private final CompletableFutureDemoService completable;
     private final InterviewPatternsDemoService patterns;
+    private final StreamQuizDemoService streamQuiz;
 
     public LearningController(
             LambdaDemoService lambda,
@@ -52,7 +54,8 @@ public class LearningController {
             DateTimeDemoService dateTime,
             CollectionsEnhancementsDemoService collections,
             CompletableFutureDemoService completable,
-            InterviewPatternsDemoService patterns) {
+            InterviewPatternsDemoService patterns,
+            StreamQuizDemoService streamQuiz) {
         this.lambda = lambda;
         this.functional = functional;
         this.methodRefs = methodRefs;
@@ -64,6 +67,7 @@ public class LearningController {
         this.collections = collections;
         this.completable = completable;
         this.patterns = patterns;
+        this.streamQuiz = streamQuiz;
     }
 
     @GetMapping("/modules")
@@ -77,7 +81,7 @@ public class LearningController {
         body.put("howToRevise", List.of(
                 "Modules 01→11 in order (~3–4 YOE depth)",
                 "Read interviewTip in 30–60s",
-                "Practice coding demos in 11-patterns",
+                "Practice coding demos in 11-patterns and 12-stream-quiz",
                 "Use INTERVIEW-QUESTIONS-3-4YOE.md as checklist"
         ));
         body.put("modules", List.of(
@@ -104,7 +108,11 @@ public class LearningController {
                         List.of("chain", "combine", "errors", "executor", "all")),
                 mod("11-patterns", "Coding patterns: topN, group, frequency, checklist",
                         List.of("topn-second", "group-agg", "partition-join", "optional-pipeline",
-                                "frequency-duplicates", "checklist", "all"))
+                                "frequency-duplicates", "checklist", "all")),
+                mod("12-stream-quiz", "Coding quiz: second highest, frequency, group, top N",
+                        List.of("second-highest", "second-by-dept", "duplicates", "first-non-repeated",
+                                "char-frequency", "word-frequency", "first-repeated", "above-average",
+                                "group-by-dept", "sort-by-salary", "min-max", "top-n", "all"))
         ));
         return body;
     }
@@ -125,6 +133,7 @@ public class LearningController {
             case "09-collections" -> collections.all();
             case "10-completable" -> completable.all();
             case "11-patterns" -> patterns.all();
+            case "12-stream-quiz" -> streamQuiz.all();
             default -> DemoResult.of(moduleId, "unknown", "GET /api/modules", Map.of());
         };
     }
@@ -227,6 +236,22 @@ public class LearningController {
                 case "frequency-duplicates" -> patterns.frequencyAndDuplicates();
                 case "checklist" -> patterns.revisionChecklist();
                 case "all" -> patterns.all();
+                default -> unknown(moduleId, demo);
+            };
+            case "12-stream-quiz" -> switch (demo) {
+                case "second-highest" -> streamQuiz.secondHighestSalary();
+                case "second-by-dept" -> streamQuiz.secondHighestByDept();
+                case "duplicates" -> streamQuiz.duplicates();
+                case "first-non-repeated" -> streamQuiz.firstNonRepeated();
+                case "char-frequency" -> streamQuiz.charFrequency();
+                case "word-frequency" -> streamQuiz.wordFrequency();
+                case "first-repeated" -> streamQuiz.firstRepeated();
+                case "above-average" -> streamQuiz.aboveAverageSalary();
+                case "group-by-dept" -> streamQuiz.groupByDepartment();
+                case "sort-by-salary" -> streamQuiz.sortBySalary();
+                case "min-max" -> streamQuiz.minMaxSalary();
+                case "top-n" -> streamQuiz.topNSalary();
+                case "all" -> streamQuiz.all();
                 default -> unknown(moduleId, demo);
             };
             default -> unknown(moduleId, demo);

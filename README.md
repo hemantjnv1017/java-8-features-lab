@@ -43,13 +43,14 @@ curl http://localhost:8081/api/modules/07-optional/orelse-vs-orelseget
 | 09 | `09-collections` | Map.merge, Comparator, frequency |
 | 10 | `10-completable` | CF chaining intro |
 | 11 | `11-patterns` | topN, group, **frequency/duplicates**, checklist |
+| 12 | `12-stream-quiz` | coding quiz: second highest, frequency, group by dept, top N |
 
 ---
 
 ## Revision plan
 
 - Day 1: 01–04  
-- Day 2: 05–07 (+ coding from 11)  
+- Day 2: 05–07 (+ coding from 11 and 12)  
 - Day 3: 08–10  
 - Day 4: `INTERVIEW-QUESTIONS-3-4YOE.md` full pass  
 
