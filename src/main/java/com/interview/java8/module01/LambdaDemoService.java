@@ -19,6 +19,44 @@ import java.util.function.BinaryOperator;
 @Service
 public class LambdaDemoService {
 
+    /*
+     * NOTES FOR COLLECTION-FRAMEWORK
+     *
+     * Object
+     *   |
+     *   +-- Iterable
+     *   |     |
+     *   |     +-- Collection
+     *   |           |
+     *   |           +-- List                         index, ordered, duplicates ok
+     *   |           |     +-- ArrayList              resizable array, fast get
+     *   |           |     +-- LinkedList             also a Deque
+     *   |           |     +-- Vector                 synchronized, legacy
+     *   |           |           +-- Stack            LIFO, legacy — prefer Deque
+     *   |           |
+     *   |           +-- Queue                        FIFO
+     *   |           |     +-- Deque                  double-ended
+     *   |           |     |     +-- ArrayDeque
+     *   |           |     |     +-- LinkedList
+     *   |           |     +-- PriorityQueue          heap, not FIFO
+     *   |           |
+     *   |           +-- Set                          no duplicates (equals / hashCode)
+     *   |                 +-- HashSet
+     *   |                 |     +-- LinkedHashSet    insertion order
+     *   |                 +-- SortedSet
+     *   |                       +-- NavigableSet
+     *   |                             +-- TreeSet    red-black tree, Comparable / Comparator
+     *   |
+     *   +-- Map                                      does NOT extend Collection or Iterable
+     *         +-- HashMap                            one null key allowed
+     *         |     +-- LinkedHashMap                insertion or access order
+     *         +-- SortedMap
+     *         |     +-- NavigableMap
+     *         |           +-- TreeMap
+     *         +-- Hashtable                          synchronized, no null, legacy
+     *               +-- Properties
+     */
+
     public DemoResult syntaxForms() {
         List<String> logs = new ArrayList<>();
 
